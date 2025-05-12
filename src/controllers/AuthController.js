@@ -1,5 +1,6 @@
 import { addUser, findUserByEmail } from "../models/UserModel";
 
+
 export function register(user) {
   const exists = findUserByEmail(user.email);
   if (exists) {
