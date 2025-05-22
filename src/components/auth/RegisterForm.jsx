@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const RegisterForm = () => {
@@ -19,17 +19,17 @@ const RegisterForm = () => {
   // Manejar cambios en los inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: value,
-    });
+    }));
     
     // Limpiar error específico cuando el usuario comienza a escribir
     if (formErrors[name]) {
-      setFormErrors({
-        ...formErrors,
+      setFormErrors(prev => ({
+        ...prev,
         [name]: '',
-      });
+      }));
     }
   };
   
@@ -96,14 +96,16 @@ const RegisterForm = () => {
       <h2 className="text-center text-2xl font-bold text-gray-900 mb-6">Crear una cuenta</h2>
       
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-md">
           <p className="text-red-700">{error}</p>
         </div>
       )}
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="form-group">
-          <label htmlFor="name" className="form-label">Nombre completo</label>
+          <label htmlFor="name" className="form-label">
+            Nombre completo
+          </label>
           <input
             type="text"
             id="name"
@@ -111,12 +113,15 @@ const RegisterForm = () => {
             value={formData.name}
             onChange={handleChange}
             className={`input ${formErrors.name ? 'input-error' : ''}`}
+            placeholder="Ingresa tu nombre completo"
           />
           {formErrors.name && <span className="error-text">{formErrors.name}</span>}
         </div>
         
         <div className="form-group">
-          <label htmlFor="email" className="form-label">Email</label>
+          <label htmlFor="email" className="form-label">
+            Email
+          </label>
           <input
             type="email"
             id="email"
@@ -124,12 +129,15 @@ const RegisterForm = () => {
             value={formData.email}
             onChange={handleChange}
             className={`input ${formErrors.email ? 'input-error' : ''}`}
+            placeholder="ejemplo@correo.com"
           />
           {formErrors.email && <span className="error-text">{formErrors.email}</span>}
         </div>
         
         <div className="form-group">
-          <label htmlFor="password" className="form-label">Contraseña</label>
+          <label htmlFor="password" className="form-label">
+            Contraseña
+          </label>
           <input
             type="password"
             id="password"
@@ -137,12 +145,15 @@ const RegisterForm = () => {
             value={formData.password}
             onChange={handleChange}
             className={`input ${formErrors.password ? 'input-error' : ''}`}
+            placeholder="Mínimo 6 caracteres"
           />
           {formErrors.password && <span className="error-text">{formErrors.password}</span>}
         </div>
         
         <div className="form-group">
-          <label htmlFor="confirmPassword" className="form-label">Confirmar contraseña</label>
+          <label htmlFor="confirmPassword" className="form-label">
+            Confirmar contraseña
+          </label>
           <input
             type="password"
             id="confirmPassword"
@@ -150,6 +161,7 @@ const RegisterForm = () => {
             value={formData.confirmPassword}
             onChange={handleChange}
             className={`input ${formErrors.confirmPassword ? 'input-error' : ''}`}
+            placeholder="Repite tu contraseña"
           />
           {formErrors.confirmPassword && <span className="error-text">{formErrors.confirmPassword}</span>}
         </div>
@@ -174,9 +186,9 @@ const RegisterForm = () => {
       <div className="text-center mt-6">
         <p className="text-sm text-gray-600">
           ¿Ya tienes una cuenta?{' '}
-          <a href="/login" className="font-medium text-primary-600 hover:text-primary-500">
+          <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
             Inicia sesión
-          </a>
+          </Link>
         </p>
       </div>
     </div>
@@ -184,4 +196,3 @@ const RegisterForm = () => {
 };
 
 export default RegisterForm;
-

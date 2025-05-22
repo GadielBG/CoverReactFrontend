@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const LoginForm = () => {
@@ -14,24 +14,21 @@ const LoginForm = () => {
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Manejar cambios en los inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: value,
-    });
+    }));
     
-    // Limpiar error específico cuando el usuario comienza a escribir
     if (formErrors[name]) {
-      setFormErrors({
-        ...formErrors,
+      setFormErrors(prev => ({
+        ...prev,
         [name]: '',
-      });
+      }));
     }
   };
   
-  // Validar el formulario
   const validateForm = () => {
     let errors = {};
     let isValid = true;
@@ -50,7 +47,6 @@ const LoginForm = () => {
     return isValid;
   };
   
-  // Manejar envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -59,12 +55,9 @@ const LoginForm = () => {
       
       try {
         await login(formData);
-        
-        // Redirigir a la página de inicio si el login es exitoso
         navigate('/');
       } catch (err) {
         console.error('Error durante el inicio de sesión:', err);
-        // Los errores de la API ya están manejados en el contexto
       } finally {
         setIsSubmitting(false);
       }
@@ -76,14 +69,16 @@ const LoginForm = () => {
       <h2 className="text-center text-2xl font-bold text-gray-900 mb-6">Iniciar Sesión</h2>
       
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-md">
           <p className="text-red-700">{error}</p>
         </div>
       )}
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="form-group">
-          <label htmlFor="email" className="form-label">Email</label>
+          <label htmlFor="email" className="form-label">
+            Email
+          </label>
           <input
             type="email"
             id="email"
@@ -91,12 +86,15 @@ const LoginForm = () => {
             value={formData.email}
             onChange={handleChange}
             className={`input ${formErrors.email ? 'input-error' : ''}`}
+            placeholder="ejemplo@correo.com"
           />
           {formErrors.email && <span className="error-text">{formErrors.email}</span>}
         </div>
         
         <div className="form-group">
-          <label htmlFor="password" className="form-label">Contraseña</label>
+          <label htmlFor="password" className="form-label">
+            Contraseña
+          </label>
           <input
             type="password"
             id="password"
@@ -104,6 +102,7 @@ const LoginForm = () => {
             value={formData.password}
             onChange={handleChange}
             className={`input ${formErrors.password ? 'input-error' : ''}`}
+            placeholder="Tu contraseña"
           />
           {formErrors.password && <span className="error-text">{formErrors.password}</span>}
         </div>
@@ -128,13 +127,13 @@ const LoginForm = () => {
       <div className="text-center mt-6">
         <p className="text-sm text-gray-600">
           ¿No tienes una cuenta?{' '}
-          <a href="/register" className="font-medium text-primary-600 hover:text-primary-500">
+          <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
             Regístrate
-          </a>
+          </Link>
         </p>
       </div>
     </div>
   );
-}
+};
 
 export default LoginForm;
