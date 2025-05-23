@@ -11,6 +11,8 @@ const RegisterForm = () => {
     email: '',
     password: '',
     confirmPassword: '',
+    telefono: '',
+    carnet: '',
   });
   
   const [formErrors, setFormErrors] = useState({});
@@ -101,10 +103,10 @@ const RegisterForm = () => {
         </div>
       )}
       
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div className="form-group">
           <label htmlFor="name" className="form-label">
-            Nombre completo
+            Nombre completo *
           </label>
           <input
             type="text"
@@ -120,7 +122,7 @@ const RegisterForm = () => {
         
         <div className="form-group">
           <label htmlFor="email" className="form-label">
-            Email
+            Email *
           </label>
           <input
             type="email"
@@ -135,8 +137,38 @@ const RegisterForm = () => {
         </div>
         
         <div className="form-group">
+          <label htmlFor="telefono" className="form-label">
+            Teléfono
+          </label>
+          <input
+            type="tel"
+            id="telefono"
+            name="telefono"
+            value={formData.telefono}
+            onChange={handleChange}
+            className="input"
+            placeholder="Número de teléfono (opcional)"
+          />
+        </div>
+        
+        <div className="form-group">
+          <label htmlFor="carnet" className="form-label">
+            Carnet de Identidad
+          </label>
+          <input
+            type="text"
+            id="carnet"
+            name="carnet"
+            value={formData.carnet}
+            onChange={handleChange}
+            className="input"
+            placeholder="Número de CI (opcional)"
+          />
+        </div>
+        
+        <div className="form-group">
           <label htmlFor="password" className="form-label">
-            Contraseña
+            Contraseña *
           </label>
           <input
             type="password"
@@ -152,7 +184,7 @@ const RegisterForm = () => {
         
         <div className="form-group">
           <label htmlFor="confirmPassword" className="form-label">
-            Confirmar contraseña
+            Confirmar contraseña *
           </label>
           <input
             type="password"
@@ -196,3 +228,4 @@ const RegisterForm = () => {
 };
 
 export default RegisterForm;
+

@@ -22,7 +22,10 @@ export const AuthProvider = ({ children }) => {
         // Si hay un token en localStorage, verificamos si es válido
         if (localStorage.getItem('token')) {
           const userData = await checkAuth();
-          setCurrentUser(userData);
+          // El backend devuelve un array de personas, tomamos la primera
+          if (userData && userData.length > 0) {
+            setCurrentUser(userData[0]);
+          }
         }
       } catch (err) {
         console.error('Error al verificar autenticación:', err);
@@ -41,11 +44,17 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const response = await registerUser(userData);
-      setCurrentUser(response.user);
+      
+      // Si el registro incluye automáticamente el login, manejar el token
+      if (response.token) {
+        setCurrentUser(response.user || response.persona);
+      }
+      
       return response;
     } catch (err) {
-      setError(err.message || 'Error al registrar usuario');
-      throw err;
+      const errorMessage = err.message || (typeof err === 'string' ? err : 'Error al registrar usuario');
+      setError(errorMessage);
+      throw new Error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -57,11 +66,30 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const response = await loginUser(credentials);
-      setCurrentUser(response.user);
+      
+      // Manejar la respuesta del backend
+      if (response.token) {
+        // Si la respuesta incluye datos del usuario, los usamos
+        if (response.user || response.persona) {
+          setCurrentUser(response.user || response.persona);
+        } else {
+          // Si no, intentamos obtener los datos del usuario
+          try {
+            const userData = await checkAuth();
+            if (userData && userData.length > 0) {
+              setCurrentUser(userData[0]);
+            }
+          } catch (authError) {
+            console.warn('No se pudieron obtener los datos del usuario después del login');
+          }
+        }
+      }
+      
       return response;
     } catch (err) {
-      setError(err.message || 'Error al iniciar sesión');
-      throw err;
+      const errorMessage = err.message || (typeof err === 'string' ? err : 'Error al iniciar sesión');
+      setError(errorMessage);
+      throw new Error(errorMessage);
     } finally {
       setLoading(false);
     }
