@@ -1,43 +1,130 @@
 {
-  "name": "cover",
+  "name": "cover-admin-frontend",
+  "version": "1.0.0",
+  "description": "Panel de administración para Cover - Sistema de gestión de discotecas",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext js,jsx --fix",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "analyze": "npm run build && npx vite-bundle-analyzer dist/stats.html",
+    "clean": "rm -rf dist node_modules/.vite",
+    "prepare": "husky install"
   },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.1.7",
-    "@tailwindcss/vite": "^4.1.6",
-    "axios": "^1.9.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.0",
-    "recharts": "^2.12.0",
-    "chart.js": "^4.4.0",
-    "@fullcalendar/react": "^6.1.0",
-    "@fullcalendar/daygrid": "^6.1.0",
-    "@tanstack/react-table": "^8.19.0",
-    "xlsx": "^0.18.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.1",
+    "@reduxjs/toolkit": "^2.0.1",
+    "react-redux": "^9.0.4",
+    "axios": "^1.6.2",
+    "react-toastify": "^9.1.3",
+    "date-fns": "^2.30.0",
+    "clsx": "^2.0.0",
+    "@headlessui/react": "^1.7.17",
+    "@heroicons/react": "^2.0.18",
+    "react-hook-form": "^7.48.2",
+    "@hookform/resolvers": "^3.3.2",
+    "yup": "^1.4.0",
+    "react-select": "^5.8.0",
+    "react-datepicker": "^4.25.0",
+    "react-calendar": "^4.7.0",
+    "recharts": "^2.8.0",
+    "react-table": "^7.8.0",
+    "react-beautiful-dnd": "^13.1.1",
+    "react-dropzone": "^14.2.3",
+    "react-modal": "^3.16.1",
+    "react-qr-code": "^2.0.12",
+    "qrcode-generator": "^1.4.4",
+    "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
-    "socket.io-client": "^4.7.0",
-    "dayjs": "^1.11.0"
+    "xlsx": "^0.18.5",
+    "lodash": "^4.17.21",
+    "uuid": "^9.0.1",
+    "react-helmet-async": "^2.0.4",
+    "react-hot-toast": "^2.4.1",
+    "framer-motion": "^10.16.16",
+    "react-intersection-observer": "^9.5.3",
+    "react-use": "^17.4.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.25.0",
-    "@types/react": "^19.1.2",
-    "@types/react-dom": "^19.1.2",
-    "@vitejs/plugin-react": "^4.4.1",
-    "autoprefixer": "^10.4.21",
-    "eslint": "^9.25.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.19",
-    "globals": "^16.0.0",
-    "postcss": "^8.5.3",
-    "tailwindcss": "^4.1.7",
-    "vite": "^6.3.5"
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@vitejs/plugin-react": "^4.1.1",
+    "vite": "^5.0.0",
+    "eslint": "^8.53.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.4",
+    "prettier": "^3.1.0",
+    "prettier-plugin-tailwindcss": "^0.5.7",
+    "tailwindcss": "^3.3.6",
+    "postcss": "^8.4.32",
+    "autoprefixer": "^10.4.16",
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "vitest": "^1.0.0",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/user-event": "^14.5.1",
+    "jsdom": "^23.0.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "cross-env": "^7.0.3",
+    "vite-bundle-analyzer": "^0.7.0",
+    "rollup-plugin-visualizer": "^5.12.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "react",
+    "vite",
+    "discoteca",
+    "nightclub",
+    "admin",
+    "dashboard",
+    "reservas",
+    "cover",
+    "bolivia"
+  ],
+  "author": {
+    "name": "Cover Team",
+    "email": "dev@cover-app.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
   }
 }
