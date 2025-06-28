@@ -1,0 +1,198 @@
+{
+  "endpoint": "POST /api/discotecas/registrar",
+  "description": "Registra una nueva discoteca para un administrador autenticado",
+  "authentication": "Bearer Token (del login previo)",
+  
+  "request_example": {
+    "nombre": "Club Phoenix",
+    "direccion": "Av. Arce #123, Zona Central, La Paz",
+    "telefono": "70123456",
+    "correo_contacto": "info@clubphoenix.com",
+    "capacidad_total": 500,
+    "horario_apertura": "20:00",
+    "horario_cierre": "04:00",
+    "estado": "activo"
+  },
+  
+  "field_specifications": {
+    "nombre": {
+      "type": "string",
+      "required": true,
+      "min_length": 2,
+      "max_length": 100,
+      "description": "Nombre de la discoteca"
+    },
+    "direccion": {
+      "type": "string", 
+      "required": true,
+      "min_length": 10,
+      "max_length": 255,
+      "description": "Dirección física completa"
+    },
+    "telefono": {
+      "type": "string",
+      "required": false,
+      "pattern": "^[67]\\d{7}$",
+      "description": "Teléfono boliviano (formato: 70123456)"
+    },
+    "correo_contacto": {
+      "type": "string",
+      "required": false,
+      "format": "email",
+      "description": "Email de contacto de la discoteca"
+    },
+    "capacidad_total": {
+      "type": "integer",
+      "required": true,
+      "minimum": 1,
+      "maximum": 10000,
+      "description": "Capacidad máxima de personas"
+    },
+    "horario_apertura": {
+      "type": "string",
+      "required": false,
+      "format": "HH:MM",
+      "description": "Hora de apertura (formato 24h)"
+    },
+    "horario_cierre": {
+      "type": "string", 
+      "required": false,
+      "format": "HH:MM",
+      "description": "Hora de cierre (puede ser del día siguiente)"
+    },
+    "estado": {
+      "type": "string",
+      "required": true,
+      "enum": ["activo", "inactivo"],
+      "default": "activo",
+      "description": "Estado inicial de la discoteca"
+    }
+  },
+  
+  "business_rules": {
+    "unique_constraints": [
+      "El nombre de la discoteca debe ser único en el sistema"
+    ],
+    "horario_validation": [
+      "Si se proporcionan ambos horarios, la discoteca debe estar abierta mínimo 2 horas",
+      "El horario puede cruzar medianoche (ej: 20:00 - 04:00)"
+    ],
+    "relationship": [
+      "Automáticamente crear relación en tabla 'personal_discotecas'",
+      "Asignar rol 'administrador' al usuario autenticado",
+      "Un administrador puede tener múltiples discotecas"
+    ]
+  },
+  
+  "success_response": {
+    "status": 201,
+    "body": {
+      "success": true,
+      "message": "Discoteca registrada exitosamente",
+      "data": {
+        "discoteca": {
+          "id": 1,
+          "nombre": "Club Phoenix", 
+          "direccion": "Av. Arce #123, Zona Central, La Paz",
+          "telefono": "70123456",
+          "correo_contacto": "info@clubphoenix.com",
+          "capacidad_total": 500,
+          "horario_apertura": "20:00:00",
+          "horario_cierre": "04:00:00",
+          "estado": "activo",
+          "creado_en": "2024-01-15T10:30:00.000Z"
+        },
+        "relacion_creada": {
+          "persona_id": 5,
+          "discoteca_id": 1,
+          "rol_personal": "administrador"
+        }
+      }
+    }
+  },
+  
+  "error_responses": {
+    "400_validation": {
+      "status": 400,
+      "body": {
+        "success": false,
+        "message": "Error de validación",
+        "errors": {
+          "nombre": "El nombre es requerido",
+          "capacidad_total": "La capacidad debe ser un número mayor a 0"
+        }
+      }
+    },
+    "409_name_taken": {
+      "status": 409,
+      "body": {
+        "success": false,
+        "message": "Ya existe una discoteca con ese nombre",
+        "error_code": "NOMBRE_DUPLICADO"
+      }
+    },
+    "401_unauthorized": {
+      "status": 401,
+      "body": {
+        "success": false,
+        "message": "Token de autenticación inválido o expirado"
+      }
+    },
+    "500_server_error": {
+      "status": 500,
+      "body": {
+        "success": false,
+        "message": "Error interno del servidor",
+        "error_code": "INTERNAL_ERROR"
+      }
+    }
+  },
+  
+  "database_operations": {
+    "tables_affected": [
+      {
+        "table": "discotecas",
+        "operation": "INSERT",
+        "description": "Crear nuevo registro de discoteca"
+      },
+      {
+        "table": "personal_discotecas", 
+        "operation": "INSERT",
+        "description": "Relacionar administrador con discoteca"
+      }
+    ],
+    "transaction_required": true,
+    "rollback_conditions": [
+      "Error al crear discoteca",
+      "Error al crear relación administrador-discoteca",
+      "Violación de constraint único"
+    ]
+  },
+  
+  "frontend_behavior": {
+    "on_success": "Redirigir a /dashboard con mensaje de éxito",
+    "on_error": "Mostrar errores en formulario y mantener datos",
+    "loading_state": "Mostrar spinner en botón 'Registrando Discoteca...'",
+    "validation": "Validación en frontend + backend"
+  },
+  
+  "additional_considerations": {
+    "security": [
+      "Validar que el token pertenece a un administrador válido",
+      "Sanitizar inputs para prevenir SQL injection",
+      "Validar tipos de datos en backend"
+    ],
+    "business_logic": [
+      "Un administrador puede gestionar múltiples discotecas",
+      "Cada discoteca debe tener un nombre único a nivel global",
+      "El administrador se convierte automáticamente en propietario/administrador de la nueva discoteca"
+    ],
+    "future_features": [
+      "Campo 'logo' para imagen de la discoteca",
+      "Campo 'descripcion' para información adicional", 
+      "Configuración de redes sociales",
+      "Múltiples ubicaciones por discoteca",
+      "Sistema de roles más granular por discoteca"
+    ]
+  }
+}

@@ -40,7 +40,7 @@ const Login = () => {
               Bienvenido a Cover
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Panel de administración para discotecas
+              Inicia sesión con las credenciales proporcionadas
             </p>
           </div>
 
@@ -48,33 +48,13 @@ const Login = () => {
           <LoginForm />
 
           {/* Footer Links */}
-          <div className="mt-6 space-y-4">
-            <div className="text-center">
-              <Link 
-                to="/reset-password" 
-                className="text-sm text-purple-600 hover:text-purple-500 transition-colors"
-              >
-                ¿Olvidaste tu contraseña?
-              </Link>
-            </div>
-            
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">¿No tienes cuenta?</span>
-              </div>
-            </div>
-            
-            <div className="text-center">
-              <Link 
-                to="/register" 
-                className="inline-flex items-center px-4 py-2 border border-purple-600 text-sm font-medium rounded-lg text-purple-600 hover:bg-purple-50 transition-colors"
-              >
-                Registrar nueva discoteca
-              </Link>
-            </div>
+          <div className="mt-6 text-center">
+            <Link 
+              to="/reset-password" 
+              className="text-sm text-purple-600 hover:text-purple-500 transition-colors"
+            >
+              ¿Olvidaste tu contraseña?
+            </Link>
           </div>
         </div>
         
