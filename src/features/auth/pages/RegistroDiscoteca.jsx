@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import axios from '../../../lib/axios';
+import { createDiscoteca, fetchMiDiscoteca } from '../../../store/slices/discotecaSlice';
 
 const RegistroDiscoteca = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { miDiscoteca, loading } = useSelector((state) => state.discoteca);
   
   const [formData, setFormData] = useState({
     nombre: '',
@@ -18,8 +20,19 @@ const RegistroDiscoteca = () => {
     horario_cierre: '',
   });
 
-  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    // Verificar si ya tiene una discoteca registrada
+    dispatch(fetchMiDiscoteca());
+  }, [dispatch]);
+
+  useEffect(() => {
+    // Si ya tiene discoteca, redirigir al dashboard
+    if (miDiscoteca) {
+      navigate('/dashboard');
+    }
+  }, [miDiscoteca, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -89,8 +102,6 @@ const RegistroDiscoteca = () => {
       const diffHours = (cierre - apertura) / (1000 * 60 * 60);
       if (diffHours < 2) {
         newErrors.horario_cierre = 'La discoteca debe estar abierta al menos 2 horas';
-      } else if (diffHours > 12) {
-        newErrors.horario_cierre = 'El horario de operación parece muy largo, verifica los horarios';
       }
     }
 
@@ -103,31 +114,25 @@ const RegistroDiscoteca = () => {
     
     if (!validateForm()) return;
 
-    setLoading(true);
     try {
       // Preparar datos para envío
       const dataToSend = {
-        nombre: formData.nombre,
-        direccion: formData.direccion,
+        nombre: formData.nombre.trim(),
+        direccion: formData.direccion.trim(),
         telefono: formData.telefono || null,
-        correo_contacto: formData.correo_contacto || null,
+        correo_contacto: formData.correo_contacto?.toLowerCase().trim() || null,
         capacidad_total: parseInt(formData.capacidad_total),
         horario_apertura: formData.horario_apertura || null,
         horario_cierre: formData.horario_cierre || null,
-        estado: 'activo'
       };
 
-      const response = await axios.post('/discotecas/registrar', dataToSend);
+      await dispatch(createDiscoteca(dataToSend)).unwrap();
       
       toast.success('¡Discoteca registrada exitosamente!');
-      // Redirigir al dashboard (o donde corresponda después del registro)
       navigate('/dashboard');
       
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || 'Error al registrar la discoteca';
-      toast.error(errorMessage);
-    } finally {
-      setLoading(false);
+      toast.error(error || 'Error al registrar la discoteca');
     }
   };
 

@@ -6,7 +6,7 @@ export const login = createAsyncThunk(
   'auth/login',
   async ({ correo, contrasena }, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/auth/login', {
+      const response = await axios.post('/personal/login', {
         correo,
         contrasena
       });
@@ -14,12 +14,12 @@ export const login = createAsyncThunk(
       // Guardar token en localStorage
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+        localStorage.setItem('user', JSON.stringify(response.data.persona));
       }
       
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Error al iniciar sesión');
+      return rejectWithValue(error.message || 'Error al iniciar sesión');
     }
   }
 );
@@ -28,10 +28,10 @@ export const register = createAsyncThunk(
   'auth/register',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/auth/register', userData);
+      const response = await axios.post('/personal/registerPersonal', userData);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Error al registrarse');
+      return rejectWithValue(error.message || 'Error al registrarse');
     }
   }
 );
@@ -40,12 +40,12 @@ export const logout = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
-      await axios.post('/auth/logout');
+      // Limpiar localStorage
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       return {};
     } catch (error) {
-      // Aunque falle el logout en el servidor, limpiamos local
+      // Aunque falle, limpiamos local
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       return {};
@@ -62,8 +62,9 @@ export const verifyToken = createAsyncThunk(
         throw new Error('No token found');
       }
       
-      const response = await axios.get('/auth/verify');
-      return response.data;
+      // Por ahora retornamos los datos guardados
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      return { user };
     } catch (error) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
@@ -107,7 +108,7 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuthenticated = true;
-        state.user = action.payload.user;
+        state.user = action.payload.persona;
         state.token = action.payload.token;
         state.error = null;
       })
