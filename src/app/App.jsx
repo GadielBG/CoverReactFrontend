@@ -7,6 +7,9 @@ import { verifyToken } from '../store/slices/authSlice';
 import { fetchMiDiscoteca } from '../store/slices/discotecaSlice';
 import { ToastContainer } from 'react-toastify';
 
+// Landing Page
+import LandingPage from '../features/landing/pages/LandingPage';
+
 // Auth Pages
 import Login from '../features/auth/pages/Login';
 import RegistroDiscoteca from '../features/auth/pages/RegistroDiscoteca';
@@ -76,12 +79,15 @@ const AppRoutes = () => {
 
   return (
     <Routes>
+      {/* Landing page pública */}
+      <Route path="/" element={<LandingPage />} />
+
       {/* Rutas públicas de autenticación */}
-      <Route 
-        path="/login" 
+      <Route
+        path="/login"
         element={
           isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />
-        } 
+        }
       />
       
       <Route 
@@ -130,13 +136,6 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Ruta raíz */}
-      <Route 
-        path="/" 
-        element={
-          <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />
-        } 
-      />
     </Routes>
   );
 };

@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Landing Page CSS Variables */
+:root {
+  --bg-dark: #07070A;
+  --bg-section: #0C0C10;
+  --bg-card: #141418;
+  --bg-card-2: #1C1C22;
+  --bg-card-3: #25252D;
+  --neon-green: #D3FF00;
+  --neon-pink: #FF7BDA;
+  --neon-gradient: linear-gradient(135deg, #D3FF00 0%, #FF7BDA 100%);
+  --text-primary: #FFFFFF;
+  --text-secondary: #B8BDD0;
+  --text-muted: #6B7084;
+  --accent-blue: #4A90FF;
+  --accent-green: #00D68F;
+  --accent-red: #FF4D6A;
+  --accent-orange: #FF8A00;
+}
+
 /* Custom styles */
 @layer base {
   html {
